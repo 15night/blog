@@ -8,8 +8,8 @@ const Blog  = (props) => {
             <h1>ブログページ</h1>
             {props.blogs.map((blog, index)=>
               <div key={index}>
-                  <h3>{blog.fontmatter.title}</h3>
-                  <p>{blog.fontmatter.date}</p>
+                  <h3>{blog.frontmatter.title}</h3>
+                  <p>{blog.frontmatter.date}</p>
                   <Link href={`/blog/${blog.slug}`}><a>Read More</a></Link>
               </div>
             )}
@@ -27,15 +27,19 @@ export async function getStaticProps() {
             const value = values[index]
             const document = matter(value.default)
             return {
-                fontmatter: document.data,
+                frontmatter: document.data,
                 slug: slug
             }
         })
         return data
     })(require.context("../data", true, /\.md$/))
+
+    const orderedBlogs = blogs.sort((a,b) => {
+        return b.frontmatter.id - a.frontmatter.id
+    })
     return {
         props: {
-            blogs: JSON.parse(JSON.stringify(blogs))
+            blogs: JSON.parse(JSON.stringify(orderedBlogs))
         }
     }
 }

@@ -1,7 +1,15 @@
 import matter from "gray-matter"
+import ReactMarkdown from "react-markdown"
 
-const SingleBlog = () => {
-  return <h1>記事ページ</h1>
+const SingleBlog = (props) => {
+  console.log(props)
+  return (
+    <div>
+      <h1>{props.frontmatter.title}</h1>
+      <p>{props.frontmatter.date}</p>
+      <ReactMarkdown>{props.markdownBody}</ReactMarkdown>
+    </div>
+  )
 }
 
 export default SingleBlog
@@ -16,7 +24,6 @@ export async function getStaticPaths() {
     return data
   })(require.context('../../data',true,/\.md$/))
   const paths = blogSlugs.map((blogSlug) => `/blog/${blogSlug}`)
-  console.log(paths)
 
   return {
     paths: paths,
@@ -29,6 +36,9 @@ export async function getStaticProps(context) {
   const data = await import(`../../data/${slug}.md`)
   const singleDocument = matter(data.default)
   return {
-    props: {}
+    props: {
+      frontmatter: singleDocument.data,
+      markdownBody: singleDocument.content
+    }
   }
 }

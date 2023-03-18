@@ -1,14 +1,22 @@
+import Image from "next/image"
 import matter from "gray-matter"
 import ReactMarkdown from "react-markdown"
+import Layout from "../../components/layout"
+import style from "../../styles/singleBlog.module.scss"
 
 const SingleBlog = (props) => {
   console.log(props)
   return (
-    <div>
-      <h1>{props.frontmatter.title}</h1>
-      <p>{props.frontmatter.date}</p>
-      <ReactMarkdown>{props.markdownBody}</ReactMarkdown>
-    </div>
+    <Layout>
+      <div className={style.hero}>
+        <Image src={props.frontmatter.image} alt="blog-image" height="500" width="1000" />
+      </div>
+      <div className={style.wrapper}>
+        <h1>{props.frontmatter.title}</h1>
+        <p>{props.frontmatter.date}</p>
+        <ReactMarkdown>{props.markdownBody}</ReactMarkdown>
+      </div>
+    </Layout>
   )
 }
 
@@ -22,7 +30,7 @@ export async function getStaticPaths() {
       return slug
     })
     return data
-  })(require.context('../../data',true,/\.md$/))
+  })(require.context("../../data", true, /\.md$/))
   const paths = blogSlugs.map((blogSlug) => `/blog/${blogSlug}`)
 
   return {
